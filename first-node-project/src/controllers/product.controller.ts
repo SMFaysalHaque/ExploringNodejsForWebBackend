@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from "http";
 import { createProduct, productService } from "../service/product.service";
 import type { IProduct } from "../types/product";
 import { bodyParser } from "../utils/parseBody";
+import { sendResponse } from "../utils/sendResponse";
 
 const productController = async (req: IncomingMessage, res: ServerResponse) => {
     // product -> GET, POST, PUT
@@ -35,30 +36,27 @@ const productController = async (req: IncomingMessage, res: ServerResponse) => {
         // ]
 
         const products = productService()
-        
-        res.writeHead(200, {"content-type": "application/json"});
-        res.end(JSON.stringify({ 
-            message: "Products retrieved successfully!!!",
-            data: products
-        }))
-    } else if ( method === "GET" && id !== null) {
-        const products = productService() //[{}, {}, {}]
-        const product = products.find((item: IProduct) => item.id === id)
 
-        if (!product) {
-            res.writeHead(404, {"content-type": "application/json"});
-            res.end(JSON.stringify({
-                message: "Product not found.",
-                data: null
-            }))
-            return;
+        try {
+            sendResponse(res, true, 200, "Product retrieved successfully!!!", products)
+        } catch (error) {
+            sendResponse(res, false, 500, "Internal Server Error!")
         }
 
-        res.writeHead(200, {"content-type": "application/json"});
-        res.end(JSON.stringify({
-            message: "Product retrieved successfully!!!",
-            data: product
-        }))
+    } else if ( method === "GET" && id !== null) {
+        try {
+            const products = productService() //[{}, {}, {}]
+            const product = products.find((item: IProduct) => item.id === id)
+
+            if (!product) {
+                return sendResponse(res, false, 404, "Product Not Found!")
+            }
+
+            return sendResponse(res, true, 200, "Product retrieved successfully!!!", product)
+        } catch (error) {
+            return sendResponse(res, false, 500, "Internal Server Error!")
+        }
+
     } else if (method === "POST" && url === "/products") {
 
         const body = await bodyParser(req)
