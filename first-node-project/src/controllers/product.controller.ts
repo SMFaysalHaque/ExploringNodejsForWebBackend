@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "http";
-import { productService } from "../service/product.service";
+import { createProduct, productService } from "../service/product.service";
 import type { IProduct } from "../types/product";
 import { bodyParser } from "../utils/parseBody";
 
@@ -44,21 +44,70 @@ const productController = async (req: IncomingMessage, res: ServerResponse) => {
     } else if ( method === "GET" && id !== null) {
         const products = productService() //[{}, {}, {}]
         const product = products.find((item: IProduct) => item.id === id)
-        
+
+        if (!product) {
+            res.writeHead(404, {"content-type": "application/json"});
+            res.end(JSON.stringify({
+                message: "Product not found.",
+                data: null
+            }))
+            return;
+        }
+
         res.writeHead(200, {"content-type": "application/json"});
-        res.end(JSON.stringify({ 
+        res.end(JSON.stringify({
             message: "Product retrieved successfully!!!",
             data: product
         }))
     } else if (method === "POST" && url === "/products") {
 
         const body = await bodyParser(req)
-        console.log(body)
+        // console.log(body)
+
+        const newProduct = {
+            id: Date.now(),
+            ...body
+        }
+
+        // console.log(newProduct)
+
+        const products = productService(); // [{}, {}]
+
+        products.push(newProduct) // [{}, {}, {new}]
+
+        createProduct(products)
 
         res.writeHead(201, {"content-type": "application/json"});
         res.end(JSON.stringify({ 
             message: "Product created successfully!!!",
-            // data: product
+            data: newProduct,
+        }))
+    } else if (method === "PUT" && id !== null) {
+
+        const body = await bodyParser(req);
+        const products = productService(); // [{}, {}]
+
+        const index = products.findIndex((p: IProduct) => p.id === id)
+        // console.log(index, products[index])
+
+        if (index < 0) {
+            res.writeHead(404, {"content-type": "application/json"});
+            res.end(JSON.stringify({ 
+                message: "Product not found!",
+                    // data: newProduct,
+            }))
+
+            // return
+        }
+
+        // console.log(products[index])
+        products[index] = { id: products[index].id, ...body };
+        createProduct(products)
+
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(JSON.stringify({ 
+            message: "Product update successfully!",
+            data: products[index],
         }))
     }
 }
