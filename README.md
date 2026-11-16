@@ -39,10 +39,16 @@ first-node-project/
 
 ## How to run
 
-Go inside the project folder first:
+First clone the project from github:
 
 ```
-cd first-node-project
+git clone https://github.com/SMFaysalHaque/ExploringNodejsForWebBackend.git
+```
+
+Go inside the project folder:
+
+```
+cd ExploringNodejsForWebBackend/first-node-project
 ```
 
 Install the packages:
@@ -88,6 +94,66 @@ Base url is `http://localhost:5000`
 ```
 
 The `id` is added automatically using `Date.now()` when creating, so you don't need to send it.
+
+## How to test with Postman
+
+This project has no frontend, so I use Postman to hit the api. Make sure the server is running first (`npm run dev`), then open Postman and try the endpoints one by one like below.
+
+**1. Get all products**
+
+- Select the method `GET`
+- In the url box type `http://localhost:5000/products`
+- Click `Send`
+- You will get back all the products from the json file
+
+**2. Get a single product**
+
+- Method `GET`
+- Url `http://localhost:5000/products/2` (here 2 is the id, change it with any id you have)
+- Click `Send`
+- It will return that one product. If the id does not exist you will get a `Product Not Found!` message
+
+**3. Create a new product**
+
+- Method `POST`
+- Url `http://localhost:5000/products`
+- Go to the `Body` tab, select `raw`, and from the dropdown on the right choose `JSON`
+- Put this in the body:
+
+```json
+{
+  "name": "Honor 400",
+  "price": 70000
+}
+```
+
+- Click `Send`
+- A new product will be created with its own id. If you do get all products again you will see it added
+
+**4. Update a product**
+
+- Method `PUT`
+- Url `http://localhost:5000/products/2` (2 is the id you want to update)
+- Same as POST, go to `Body` -> `raw` -> `JSON` and give the new data:
+
+```json
+{
+  "name": "Symphony Z60 Pro",
+  "price": 15000
+}
+```
+
+- Click `Send`
+- That product will be updated
+
+**5. Delete a product**
+
+- Method `DELETE`
+- Url `http://localhost:5000/products/2` (2 is the id you want to delete)
+- Click `Send`
+- The product will be removed from the json file
+
+Tip: after doing POST, PUT or DELETE, run the `GET /products` again to see the changes.
 
 ## Note
 
