@@ -1,6 +1,6 @@
 # ExploringNodejsForWebBackend
 
-This is my practice project where I am learning how the backend works with Node.js. I am taking the Programming Hero course and this is the first project I built while learning. The main goal here was to understand how a server actually works from the ground, so I did NOT use Express. Everything is done with the built in `http` module of Node.
+This is my practice project where I am learning how the backend works with Node.js. This is the first project I built while learning. The main goal here was to understand how a server actually works from the ground, so I did NOT use Express. Everything is done with the built in `http` module of Node.
 
 Basically it is a small products API (CRUD) that reads and writes data from a json file instead of a real database. I did it on purpose because I wanted to first understand the core things before jumping into Express and MongoDB.
 
@@ -91,4 +91,4 @@ The `id` is added automatically using `Date.now()` when creating, so you don't n
 
 ## Note
 
-This is only a learning project so there are some things I know can be improved, like the data is stored in a json file and not a real database, and there is no proper validation yet. I kept it simple on purpose. I will improve these things when I move to the Express and MongoDB part of the course.
+This is only a learning project so there are some things I know can be improved, like the data is stored in a json file and not a real database, and there is no proper validation yet. I kept it simple on purpose. I will improve these things when I move to the Express and MongoDB part.
